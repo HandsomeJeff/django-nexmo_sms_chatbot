@@ -1,0 +1,67 @@
+ó
+„Yc           @  sŠ   d  d l  m Z d  d l Z d  d l Z d  d l Z d  d l Z d  d l Z d Z d Z e j	 d e d e ƒ Z
+ d e f d „  ƒ  YZ d S(	   iÿÿÿÿ(   t   unicode_literalsNu   keyt   secrett   MessageCounterc           B  sì   e  Z d  Z d Z d Z i  Z d Z i d d 6d d 6d d 6d	 d
+ 6d d 6d d 6d d 6d d 6Z i  Z i  Z	 x e j
+ ƒ  D] Z g  e e <q{ Wx e j ƒ  D] Z g  e	 e <qœ Wi i  d 6Z d „  Z d „  Z d „  Z d „  Z d „  Z RS(   u   12035638086u    i    u   Memorial Unionu   1u
+   Hassayampau   2u	   Manzanitau   3u   Sonorau   4u   Nobleu   5u   Designu   6u   SDFCu   7u   Mill Aveu   8u   12034869067c         O  se   t  t |  ƒ j | | Ž  t d d ƒ |  _ d d d d d g |  _ d d	 g |  _ d
+ d g |  _ d  S(   Nu   big.dbu   rw+u   Hello there!u   Buenos dias!u
+   Guten tag!u	   Well met!u   Hello!u   What would you like to do?u   What are you up to today?u$   Sorry, please select a valid number.u%   Sorry, try again with a valid number?(   t   superR   t   __init__t   opent   dbt	   greetingst   whatt   errors(   t   selft   argst   kwargs(    (    sU   /home/stevey_mcsteveface/Documents/Virtualenv/djchatbot/chatbot_main/botsite/brain.pyR   /   s    		c         C  sn   i t  d 6t d 6| d 6| d 6| d 6} d t j | ƒ } t j | ƒ } | j d d ƒ t j | ƒ } d  S(	   Nu   api_keyu
+   api_secretu   tou   fromu   textu    https://rest.nexmo.com/sms/json?u   Acceptu   application/json(   t   api_keyt
+   api_secrett   urllibt	   urlencodet   urllib2t   Requestt
+   add_headert   urlopen(   R   t   to_numt   msgt   from_numt   paramst   urlt   requestt   response(    (    sU   /home/stevey_mcsteveface/Documents/Virtualenv/djchatbot/chatbot_main/botsite/brain.pyt   send_smsH   s    
+c         C  sh  xa|  j  D]V} t |  j  | ƒ d k r
+ |  j  | j d ƒ } |  j  | j d ƒ } t |  j ƒ } | |  j | | <| |  j | | <d | GHd | GH|  j | d j d ƒ t j j ƒ  |  j | d <| |  j | d <|  j | d j d ƒ t j j ƒ  |  j | d <| |  j | d <d d	 l	 } |  j
+ | d
+ | ƒ | j d ƒ |  j
+ | d
+ | ƒ q
+ q
+ Wd	 S(   uþ   
+        Goes through list of users queuing at each location.
+
+        If list contains two or more users in queue, creates a pairing
+        between the first two and add to number in list of numbers.
+
+        Users are then removed from queue.
+        i   i    u   to %s: Match Found!u   statei   u	   timestampu   phoneiÿÿÿÿNu   We have found a match! Say sup!i   (   t   roomst   lent   popt   mint   fake_numt   countert   appendt   datetimet   nowt   timeR   t   sleep(   R   R   t   num1t   num2t   supnumR'   (    (    sU   /home/stevey_mcsteveface/Documents/Virtualenv/djchatbot/chatbot_main/botsite/brain.pyt   match_foundY   s(    
+		c         C  sÁ  d } | |  j  k r¸| |  _ | |  _ |  j d k rí d | k rÆ | t j |  j ƒ d d d 7} xM t d t |  j	 ƒ d ƒ D]/ } | t
+ | ƒ d |  j	 t
+ | ƒ d 7} q W|  j d	 7_ n	 d |  _ |  j | d
+ j |  j ƒ q½|  j d	 k r
+| |  j	 k rÑ| } |  j	 | } | d | | f d d d d 7} |  j d	 7_ |  j | d
+ j |  j ƒ | |  j | k r–|  j | j | ƒ n  t j j ƒ  |  j | d <|  j  |  j | d <|  j ƒ  qµd	 |  _ |  j | d
+ j |  j ƒ t j |  j ƒ } q½|  j d k r™| d k rd |  _ |  j | d
+ j |  j ƒ x; |  j D]0 } | |  j | k rS|  j | j | ƒ qSqSWd } qµd } q½|  j d k r±d } q½d Sn| |  j k r¹| |  _ |  j d k r|| } |  j |  j | |  _ d | k rq|  j | d
+ j d ƒ |  j |  j |  j | d
+ j d ƒ |  j j | d ƒ } |  j j | d ƒ n  |  j GHq½|  j d k s©|  j d	 k s©|  j d k r²d } q½d Sn d S| S(   u½   
+        Creates a message to be used to respond to user's texts.
+
+        Toll-free number responds to users in states 0 to 20.
+
+        Long numbers respond to users in state 30.
+        u    i    u   supu   
+u   Where would you like to go?u   
+
+i   u   . i
+   u   stateu!   Thanks! You have selected %s. %s.u0   We'll let you know if anyone else is interested.u   Reply 'c' to cancel.u	   timestampu   phonei   u   cu=   Your queue has been cancelled. Text 'sup' to start a new one!u    Searching...
+Text 'c' to cancel.i   u?   It would appear you are already in a conversation with someone.Nu   /endchatu-   Oops, there doesn't seem to be anyone here...(   t   tollfreeR   R   t   countt   randomt   choiceR   t   rangeR   t   placest   strR#   R$   R   R%   R&   R,   R
+   t   removeR"   R    t   None(   R   t   textt   tot   msisdnR   t   xt   placeR*   (    (    sU   /home/stevey_mcsteveface/Documents/Virtualenv/djchatbot/chatbot_main/botsite/brain.pyt   question|   sx    			#-	!							c         C  s’  y | d d } Wn n Xy | d d } Wn n Xy | d d } Wn n Xy | d d } Wn n Xy | d d } Wn n Xy | d d } Wn n Xy | d d } Wn n Xy | d	 d }	 Wn n Xy | d
+ d }
+ Wn n Xy | d d } Wn n Xy | d d } Wn n Xy | d d } Wn n Xy | d d } Wn n X| GH|
+ j  ƒ  }
+ | |  j j ƒ  k räi  |  j | <d g |  j | d <t j j ƒ  |  j | d <|  j |  j | d <n¥ |  j | d d d k s|  j | d d d k rq|  j | d t j j ƒ  t j d d ƒ k rqd |  _ |  j | d j |  j ƒ n |  j | d d |  _ |  j GH|  j GHt	 |  j | ƒ d k rø|
+ d k rød } |  j
+ | | |  j ƒ |  j | d j |  j ƒ n |  j |
+ | | ƒ } | GH|  j GH|  j GH|  j GH|  j GH|  j GH|  j GH|  j
+ |  j | |  j ƒ |  j j ƒ  |  j j t |  j ƒ ƒ |  j j ƒ  d S(   uš   
+        Takes message information (dictionary) as argument.
+
+        Strips each value from its key, to be used in subsequent
+        functions.
+        u   typei    u   tou   msisdnu	   messageIdu   message_timestampu	   datestampu	   timestampu   nonceu   textu   concatu
+   concat_refu   concat_totalu   concat_partu   stateu   phoneiÿÿÿÿi   i   t   secondsi   i   u   supu.   Welcome to SUP! Text 'sup' to get started now!N(   t   lowerR#   t   keysR%   R&   R   t	   timedeltaR.   R$   R   R   R-   R;   R   R   R"   R   t   truncatet   writeR3   t   close(   R   R   t   _typeR7   R8   t	   messageIdt   message_timestampt	   datestampt	   timestampt   nonceR6   t   concatt
+   concat_reft   concat_totalt   concat_partt   resp(    (    sU   /home/stevey_mcsteveface/Documents/Virtualenv/djchatbot/chatbot_main/botsite/brain.pyt   on_chat_messageÒ   s¨    	%(   t   __name__t
+   __module__R-   R   R   R#   R.   R2   R   t   sessionst   valuesR   R>   R"   R   R   R,   R;   RN   (    (    (    sU   /home/stevey_mcsteveface/Documents/Virtualenv/djchatbot/chatbot_main/botsite/brain.pyR      s6   
+
+			#	V(   t
+   __future__R    R/   R%   t   nexmoR   R   R   R   t   Clientt   clientt   objectR   (    (    (    sU   /home/stevey_mcsteveface/Documents/Virtualenv/djchatbot/chatbot_main/botsite/brain.pyt   <module>   s   
